@@ -7,4 +7,9 @@ package com.houhong.algorithm.ribbon;
  * @create: 2022-08-11 16:22
  **/
 public class ConstantsHash {
+
+
+
+
+    
 }
