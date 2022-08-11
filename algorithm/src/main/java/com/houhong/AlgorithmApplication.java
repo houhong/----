@@ -10,4 +10,7 @@ public class AlgorithmApplication {
         SpringApplication.run(AlgorithmApplication.class, args);
     }
 
+
+
+    
 }
