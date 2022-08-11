@@ -9,7 +9,23 @@ package com.houhong.algorithm.ribbon;
 public class ConstantsHash {
 
 
+    /**
+    *
+    *  原理：将NodeList 先均匀分布 构成的环，切分环。
+     *  然后，随机散列的在每一个区域内在划分节点---保证足够散列。（虚拟节点） 然后 将失败的数据打在下一个环上。
+    *
+    *
+    **/
+
+    /**
+    *
+    *  将字符串转换成32位的长度
+    *
+    **/
+    public Long strTo32Long() {
+
+        return null;
+    }
 
 
-    
 }

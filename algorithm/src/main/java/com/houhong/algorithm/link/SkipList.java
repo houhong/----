@@ -12,31 +12,24 @@ import java.util.Stack;
 
 
 /**
-*
-*  时间复杂度分析
- *      如下：
- *          第一层级   1                               16
- *
- *          第二层级： 1               7               16
- *
- *          第一层级： 1       2       7       9       16          19
- *
- *          原始数据: 1   2   4   6   7   8   9   13   16   18    19
- *˚
- *        有时间复杂度 =  索引高度 * (每层遍历次数)
- *              假设 每2个取一个索引： 所以第一层索引 =  N/2 第二层 = N//2*2  .....
- *                  所以第 h = N/2exh  = 2  所以 N = 2 ex(h+1)  Log2 N = h+1  -> Log2N -1 = h  加上底层 -->Log2N = h
- *
- *                  由于 每层 最多遍历 3 次 =  （2+1）  =  Log2 N *3  = O(Log2N) 所以取每层为K个元素 =  O(Logl N )
- *
- *                  时间复杂度
-   *
- *
-*
-*
-*
-*
-**/
+ * 时间复杂度分析
+ * 如下：
+ * 第一层级   1                               16
+ * <p>
+ * 第二层级： 1               7               16
+ * <p>
+ * 第一层级： 1       2       7       9       16          19
+ * <p>
+ * 原始数据: 1   2   4   6   7   8   9   13   16   18    19
+ * ˚
+ * 有时间复杂度 =  索引高度 * (每层遍历次数)
+ * 假设 每2个取一个索引： 所以第一层索引 =  N/2 第二层 = N//2*2  .....
+ * 所以第 h = N/2exh  = 2  所以 N = 2 ex(h+1)  Log2 N = h+1  -> Log2N -1 = h  加上底层 -->Log2N = h
+ * <p>
+ * 由于 每层 最多遍历 3 次 =  （2+1）  =  Log2 N *3  = O(Log2N) 所以取每层为K个元素 =  O(Logl N )
+ * <p>
+ * 时间复杂度
+ **/
 
 class SkipNode<T> {
     int key;
@@ -50,6 +43,12 @@ class SkipNode<T> {
 
 }
 
+
+/**
+*
+*  索引的维护 必须是有序的。
+*
+**/
 public class SkipList<T> {
 
     //头节点，入口
@@ -66,6 +65,34 @@ public class SkipList<T> {
         headNode = new SkipNode(Integer.MIN_VALUE, null);
         highLevel = 0;
     }
+
+
+    public SkipNode<Integer> searchKey(int key) {
+
+
+        SkipNode temp = headNode;
+
+
+        while (temp != null) {
+
+            if (temp.key == key) {
+                return temp;
+            } else if (temp.right == null) {
+                temp = temp.right;
+            } else if (temp.right.key > key) {
+
+                temp = temp.down;
+            } else {
+
+                temp = temp.right;
+            }
+        }
+
+
+        return null;
+
+    }
+
 
     public SkipNode search(int key) {
         SkipNode team = headNode;
@@ -90,8 +117,7 @@ public class SkipList<T> {
     }
 
     //删除不需要考虑层
-    public void delete(int key)
-    {
+    public void delete(int key) {
         SkipNode team = headNode;
         while (team != null) {
             //右侧没有了，说明这一层找完，没有只能下降
@@ -170,21 +196,18 @@ public class SkipList<T> {
             }
             //考虑是否需要向上
             //已经到达最高级的节点啦
-            if (level > MAX_LEVEL)
-            {
+            if (level > MAX_LEVEL) {
                 break;
             }
             //[0-1]随机数
             double num = random.nextDouble();
             //运气不好结束
-            if (num > 0.5)
-            {
+            if (num > 0.5) {
                 break;
             }
             level++;
             //比当前最大高度要高但是依然在允许范围内 需要改变head节点
-            if (level > highLevel)
-            {
+            if (level > highLevel) {
                 highLevel = level;
                 //需要创建一个新的节点
                 SkipNode highHeadNode = new SkipNode(Integer.MIN_VALUE, null);
