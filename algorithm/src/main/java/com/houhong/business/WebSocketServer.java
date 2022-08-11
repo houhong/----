@@ -11,16 +11,23 @@ import java.util.Map;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 /**
- * @Auther: 公众号：程序员小富
- * @Date: 2022/7/18 14:15
- * @Description:
- */
+ * @Author houhong
+ * @Description //TODO  基于webSocket 的消息推送
+ * @Date 5:37 下午 2022/8/11
+ * @return {@link null}
+ **/
 @Component
 @Slf4j
 // 接口路径 ws://localhost:7777/webSocket/userId;
 @ServerEndpoint("/websocket/{userId}")
 public class WebSocketServer {
 
+
+    /**
+     * 基于传输层socket的协议层的通信。传输层使用tcp
+     * 协议层为浏览器和服务端的通信。
+     * 设置了会话机制
+     **/
     //与某个客户端的连接会话，需要通过它来给客户端发送数据
     private Session session;
 
@@ -38,7 +45,7 @@ public class WebSocketServer {
             this.session = session;
             webSockets.add(this);
             sessionPool.put(userId, session);
-             System.out.println("【websocket服务端】有新的连接，总数为:" + webSockets.size());
+            System.out.println("【websocket服务端】有新的连接，总数为:" + webSockets.size());
         } catch (Exception e) {
         }
     }
@@ -50,7 +57,7 @@ public class WebSocketServer {
     public void onClose() {
         try {
             webSockets.remove(this);
-             System.out.println("【websocket服务端】连接断开，总数为:" + webSockets.size());
+            System.out.println("【websocket服务端】连接断开，总数为:" + webSockets.size());
         } catch (Exception e) {
         }
     }
@@ -60,7 +67,7 @@ public class WebSocketServer {
      */
     @OnMessage
     public void onMessage(String message) {
-         System.out.println("【websocket服务端】收到客户端消息:" + message);
+        System.out.println("【websocket服务端】收到客户端消息:" + message);
     }
 
     /**
@@ -75,7 +82,7 @@ public class WebSocketServer {
      * 此为广播消息
      */
     public void sendAllMessage(String message) {
-         System.out.println("【websocket服务端】广播消息:" + message);
+        System.out.println("【websocket服务端】广播消息:" + message);
         for (WebSocketServer webSocket : webSockets) {
             try {
                 if (webSocket.session.isOpen()) {
@@ -94,7 +101,7 @@ public class WebSocketServer {
         Session session = sessionPool.get(userId);
         if (session != null && session.isOpen()) {
             try {
-                 System.out.println("【websocket服务端】 单点消息:" + message);
+                System.out.println("【websocket服务端】 单点消息:" + message);
                 session.getAsyncRemote().sendText(message);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -110,7 +117,7 @@ public class WebSocketServer {
             Session session = sessionPool.get(userId);
             if (session != null && session.isOpen()) {
                 try {
-                     System.out.println("【websocket服务端】 单点消息:" + message);
+                    System.out.println("【websocket服务端】 单点消息:" + message);
                     session.getAsyncRemote().sendText(message);
                 } catch (Exception e) {
                     e.printStackTrace();
