@@ -108,6 +108,42 @@ public class LevelTrave {
 
     }
 
+
+    public List<List<Integer>> zigzagLevelOrder(TreeNode root) {
+
+        List<List<Integer>> ans = new ArrayList<>();
+        levelOrder(root, 0, ans);
+
+        for (int index = 0; index < ans.size(); index++) {
+
+            if (index % 2 == 1) {
+
+                List<Integer> tempList = ans.get(index);
+
+                /**
+                 *  双指针遍历
+                 *
+                 **/
+                for (int start = 0, end = tempList.size() - 1; start < end; start++, end--) {
+
+                    Integer startVal = tempList.get(start);
+                    Integer endVal = tempList.get(end);
+
+                    Integer temp = startVal;
+                    startVal = endVal;
+                    endVal = temp;
+
+                    tempList.set(start, startVal);
+                    tempList.set(end, endVal);
+                }
+
+            }
+
+        }
+
+        return null;
+    }
+
     private static void swap(int first, int second, List<List<Integer>> ans) {
 
         List<Integer> temp = new ArrayList<>();
@@ -178,6 +214,7 @@ public class LevelTrave {
             }
             System.out.println();
         }
+
 
     }
 }
