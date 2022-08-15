@@ -63,5 +63,38 @@ public class TreeOper {
         return getHeight(root) >= 0;
     }
 
+    /**
+     * 给你二叉树的根节点 root 和一个表示目标和的整数 targetSum 。判断该树中是否存在 根节点到叶子节点 的路径，这条路径上所有节点值相加等于目标和 targetSum 。如果存在，返回 true ；否则，返回 false 。
+     * <p>
+     * 来源：力扣（LeetCode）
+     * 链接：https://leetcode.cn/problems/path-sum
+     * 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+     **/
+
+
+    /**
+     * 定义递归函数：hasPathSum（TreeNode root, int targetSum） 表示有路径是的sum  =target
+     **/
+    public boolean hasPathSum(TreeNode root, int targetSum) {
+
+
+        //基本情况
+        if (root == null) {
+            return false;
+        }
+        if (root.left == null && root.right == null) {
+            return root.val == targetSum;
+        }
+
+        if (root.left != null && hasPathSum(root.left, targetSum - root.val)) {
+            return true;
+        }
+        if (root.right != null && hasPathSum(root.right, targetSum - root.val)) {
+            return true;
+        }
+
+        return false;
+    }
+
 
 }

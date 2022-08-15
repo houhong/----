@@ -58,6 +58,17 @@
             <artifactId>rocketmq-acl</artifactId>
             <version>4.7.1</version>
         </dependency>
+
+        <!--网关服务-->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-gateway-core</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
