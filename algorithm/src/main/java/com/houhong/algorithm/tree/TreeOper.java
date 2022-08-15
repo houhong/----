@@ -97,4 +97,70 @@ public class TreeOper {
     }
 
 
+    /**
+     * 根据前序遍历和后序遍历 完成二叉树构建
+     * <p>
+     * 1: 找根节点
+     * 2: 递归构建左,挂靠？
+     * 3： 递归构建右，挂靠
+     * <p>
+     * 定义递归函数定义：根据前序遍历和中序遍历构建树 todo  错误版本
+     **/
+    public TreeNode buildTree(int[] preorder, int[] inorder) {
+
+
+        TreeNode root = null;
+        //base case
+        if (preorder.length == 0) {
+            return null;
+        }
+        int rootVal = preorder[0];
+        root = new TreeNode();
+        root.val = rootVal;
+
+        int tempInIndex = 0;
+        for (; tempInIndex < inorder.length; tempInIndex++) {
+
+            int inRootVal = inorder[tempInIndex];
+            if (inRootVal == rootVal) {
+                break;
+            }
+        }
+
+        int[] leftArr = new int[tempInIndex];
+        int[] rightAr = new int[inorder.length - tempInIndex];
+
+        for (int index = 0; index < tempInIndex; index++) {
+            leftArr[index] = inorder[index];
+        }
+
+        for (int index = tempInIndex; index < inorder.length; index++) {
+            rightAr[index] = inorder[index];
+        }
+
+        //在根据length 获取前序遍历
+        int[] leftPreArr = new int[tempInIndex];
+        int[] rightPreAr = new int[inorder.length - tempInIndex];
+
+        for (int index = 1; index <= tempInIndex; index++) {
+            leftPreArr[index] = preorder[index];
+        }
+
+        for (int index = tempInIndex; index < preorder.length; index++) {
+            rightPreAr[index] = preorder[index];
+        }
+
+
+        //挂左孩子 -- 缩小范围
+        TreeNode leftChild = buildTree(leftPreArr, leftArr);
+        root.left = leftChild;
+        //挂右孩子
+        TreeNode rightChild = buildTree(rightPreAr, rightAr);
+        root.right = rightChild;
+
+
+        return root;
+    }
+
+
 }
