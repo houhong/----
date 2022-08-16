@@ -1,8 +1,8 @@
 package com.houhong.algorithm.tree;
 
-import javax.validation.constraints.Max;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 
 /**
  * @program: algorithm-work
@@ -12,20 +12,20 @@ import java.util.List;
  **/
 
 
-class TreeNode {
+class TreeNodes {
 
     int val;
-    TreeNode left;
-    TreeNode right;
+    TreeNodes left;
+    TreeNodes right;
 
-    TreeNode() {
+    TreeNodes() {
     }
 
-    TreeNode(int val) {
+    TreeNodes(int val) {
         this.val = val;
     }
 
-    TreeNode(int val, TreeNode left, TreeNode right) {
+    TreeNodes(int val, TreeNodes left, TreeNodes right) {
         this.val = val;
         this.left = left;
         this.right = right;
@@ -39,7 +39,7 @@ public class TreeOper {
      * 设计递归函数第一步 是设计函数的意义。
      * 判断正不正确，使用数学归纳法去验证
      **/
-    public Integer getHeight(TreeNode root) {
+    public Integer getHeight(TreeNodes root) {
 
         if (root == null) {
             return null;
@@ -59,7 +59,7 @@ public class TreeOper {
 
     }
 
-    public Boolean isBalance(TreeNode root) {
+    public Boolean isBalance(TreeNodes root) {
 
 
         return getHeight(root) >= 0;
@@ -77,7 +77,7 @@ public class TreeOper {
     /**
      * 定义递归函数：hasPathSum（TreeNode root, int targetSum） 表示有路径是的sum  =target
      **/
-    public boolean hasPathSum(TreeNode root, int targetSum) {
+    public boolean hasPathSum(TreeNodes root, int targetSum) {
 
 
         //基本情况
@@ -108,16 +108,16 @@ public class TreeOper {
      * <p>
      * 定义递归函数定义：根据前序遍历和中序遍历构建树 todo  错误版本
      **/
-    public TreeNode buildTree(int[] preorder, int[] inorder) {
+    public TreeNodes buildTree(int[] preorder, int[] inorder) {
 
 
-        TreeNode root = null;
+        TreeNodes root = null;
         //base case
         if (preorder.length == 0) {
             return null;
         }
         int rootVal = preorder[0];
-        root = new TreeNode();
+        root = new TreeNodes();
         root.val = rootVal;
 
         int tempInIndex = 0;
@@ -154,10 +154,10 @@ public class TreeOper {
 
 
         //挂左孩子 -- 缩小范围
-        TreeNode leftChild = buildTree(leftPreArr, leftArr);
+        TreeNodes leftChild = buildTree(leftPreArr, leftArr);
         root.left = leftChild;
         //挂右孩子
-        TreeNode rightChild = buildTree(rightPreAr, rightAr);
+        TreeNodes rightChild = buildTree(rightPreAr, rightAr);
         root.right = rightChild;
 
 
@@ -171,10 +171,10 @@ public class TreeOper {
      * <p>
      * 假设 pos =  3 所以在 pos 后面的肯定是右子树
      */
-    public TreeNode buildTreeV2(int[] preorder, int[] inorder) {
+    public TreeNodes buildTreeV2(int[] preorder, int[] inorder) {
 
 
-        TreeNode root = null;
+        TreeNodes root = null;
         //base case
         if (preorder.length == 0) {
             return null;
@@ -197,7 +197,6 @@ public class TreeOper {
             leftIn[i] = inorder[i];
         }
 
-
         int[] rightPre = new int[preorder.length - pos - 1];
         int[] rightIn = new int[preorder.length - pos - 1];
         for (int i = pos + 1, j = 0; i < preorder.length; i++, j++) {
@@ -206,15 +205,139 @@ public class TreeOper {
             rightIn[j] = inorder[i];
         }
 
-        root = new TreeNode(preorder[0]);
+        root = new TreeNodes(preorder[0]);
         //获取左子树
-        TreeNode leftChild = buildTreeV2(leftPre, leftIn);
+        TreeNodes leftChild = buildTreeV2(leftPre, leftIn);
         root.left = leftChild;
         //获取右子树
-        TreeNode rightChild = buildTreeV2(rightPre, rightIn);
+        TreeNodes rightChild = buildTreeV2(rightPre, rightIn);
         root.right = rightChild;
 
         return root;
+    }
+
+
+    public static void main(String[] args) {
+
+        TreeOper oper = new TreeOper();
+
+        int[] preorder = new int[]{1, 2, 4, 5, 3, 6};
+        int[] inOrder = new int[]{4, 2, 5, 1, 6, 3};
+
+
+        TreeNodes root = oper.buildTreeV2(preorder, inOrder);
+
+        List<Integer> integers = oper.postOrder(root);
+
+        for (Integer integer : integers) {
+
+            System.out.println(integer);
+        }
+
+
+    }
+
+
+    /**
+     * 前序遍历非递归
+     **/
+    public List<Integer> traverseByStack(TreeNodes root) {
+
+        List<Integer> res = new ArrayList<>();
+
+        if (root == null) {
+            return res;
+        }
+        Stack<TreeNodes> stack = new Stack<>();
+        stack.push(root);
+        while (!stack.isEmpty()) {
+
+            TreeNodes pop = stack.pop();
+            res.add(pop.val);
+
+            if (pop.right != null) {
+                stack.push(pop.right);
+            }
+            if (pop.left != null) {
+                stack.push(pop.left);
+            }
+        }
+        return res;
+    }
+
+
+    /**
+     * 前序遍历非递归
+     **/
+    public List<Integer> traverseInByStack(TreeNodes root) {
+
+        List<Integer> res = new ArrayList<>();
+
+        if (root == null) {
+            return res;
+        }
+        Stack<TreeNodes> stack = new Stack<>();
+        stack.push(root);
+
+
+        //处理回溯的时候 又走左孩子
+        boolean isLeft = true;
+
+        while (!stack.isEmpty()) {
+
+            TreeNodes pop = stack.pop();
+
+            if (isLeft && pop.left != null) {
+
+                stack.push(pop);
+                stack.push(pop.left);
+            } else {
+
+                res.add(pop.val);
+                //如果右孩子处理完毕后 表明 左孩子已经处理了。回溯的时候 就不应该再处理左孩子了
+                if (isLeft = pop.right != null) {
+                    stack.push(pop.right);
+                }
+            }
+        }
+        return res;
+    }
+
+    /**
+     * 后序列遍历 == 左 右 根   --> 处理  根 右  左
+     **/
+    public List<Integer> postOrder(TreeNodes root) {
+
+        List<Integer> res = new ArrayList<>();
+
+        Stack<TreeNodes> result = new Stack<TreeNodes>();
+
+        if (root == null) {
+            return res;
+        }
+
+        Stack<TreeNodes> stack = new Stack<>();
+
+        stack.push(root);
+        while (!stack.isEmpty()) {
+
+            root = stack.pop();
+            result.push(root);
+            if (root.left != null) {
+                stack.add(root.left);
+            }
+            if (root.right != null) {
+                stack.add(root.right);
+            }
+        }
+
+        //倒叙
+        while (!result.isEmpty()) {
+
+            TreeNodes pop = result.pop();
+            res.add(pop.val);
+        }
+        return res;
     }
 
 

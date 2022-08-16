@@ -13,8 +13,8 @@ import java.util.List;
 class TreeNode {
 
     int val;
-    TreeNode left;
-    TreeNode right;
+    TreeNodes left;
+    TreeNodes right;
 
     TreeNode() {
     }
@@ -23,7 +23,7 @@ class TreeNode {
         this.val = val;
     }
 
-    TreeNode(int val, TreeNode left, TreeNode right) {
+    TreeNode(int val, TreeNodes left, TreeNodes right) {
         this.val = val;
         this.left = left;
         this.right = right;
@@ -61,7 +61,7 @@ public class LevelTrave {
      * <p>
      * 】
      **/
-    public List<List<Integer>> levelOrder(TreeNode root, int k, List<List<Integer>> ans) {
+    public List<List<Integer>> levelOrder(TreeNodes root, int k, List<List<Integer>> ans) {
 
         if (root == null) {
             return null;
@@ -76,7 +76,7 @@ public class LevelTrave {
         return ans;
     }
 
-    public List<List<Integer>> levelOrder(TreeNode root) {
+    public List<List<Integer>> levelOrder(TreeNodes root) {
 
         List<List<Integer>> ans = new ArrayList<>();
         levelOrder(root, 0, ans);
@@ -94,7 +94,7 @@ public class LevelTrave {
      * <p>
      * 】
      **/
-    public List<List<Integer>> levelOrderTravse(TreeNode root) {
+    public List<List<Integer>> levelOrderTravse(TreeNodes root) {
 
         List<List<Integer>> ans = new ArrayList<>();
         levelOrder(root, 0, ans);
@@ -109,7 +109,7 @@ public class LevelTrave {
     }
 
 
-    public List<List<Integer>> zigzagLevelOrder(TreeNode root) {
+    public List<List<Integer>> zigzagLevelOrder(TreeNodes root) {
 
         List<List<Integer>> ans = new ArrayList<>();
         levelOrder(root, 0, ans);
