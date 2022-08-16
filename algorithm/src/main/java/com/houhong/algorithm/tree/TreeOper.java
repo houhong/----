@@ -1,6 +1,8 @@
 package com.houhong.algorithm.tree;
 
 import javax.validation.constraints.Max;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @program: algorithm-work
@@ -158,6 +160,59 @@ public class TreeOper {
         TreeNode rightChild = buildTree(rightPreAr, rightAr);
         root.right = rightChild;
 
+
+        return root;
+    }
+
+
+    /**
+     * [1  2 3 4 5 6] pre
+     * [6  3  4 5  2] in
+     * <p>
+     * 假设 pos =  3 所以在 pos 后面的肯定是右子树
+     */
+    public TreeNode buildTreeV2(int[] preorder, int[] inorder) {
+
+
+        TreeNode root = null;
+        //base case
+        if (preorder.length == 0) {
+            return null;
+        }
+        int pos = 0;
+        while (inorder[pos] != preorder[0]) {
+            pos++;
+        }
+
+
+        /**
+         *  切分左孩子还是右孩子
+         *
+         **/
+        int[] leftPre = new int[pos];
+        int[] leftIn = new int[pos];
+        for (int i = 0; i < pos; i++) {
+
+            leftPre[i] = preorder[i + 1];
+            leftIn[i] = inorder[i];
+        }
+
+
+        int[] rightPre = new int[preorder.length - pos - 1];
+        int[] rightIn = new int[preorder.length - pos - 1];
+        for (int i = pos + 1, j = 0; i < preorder.length; i++, j++) {
+
+            rightPre[j] = preorder[i];
+            rightIn[j] = inorder[i];
+        }
+
+        root = new TreeNode(preorder[0]);
+        //获取左子树
+        TreeNode leftChild = buildTreeV2(leftPre, leftIn);
+        root.left = leftChild;
+        //获取右子树
+        TreeNode rightChild = buildTreeV2(rightPre, rightIn);
+        root.right = rightChild;
 
         return root;
     }
