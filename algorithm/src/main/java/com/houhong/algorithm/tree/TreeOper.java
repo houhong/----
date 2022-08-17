@@ -341,4 +341,40 @@ public class TreeOper {
     }
 
 
+    public boolean isCousins(TreeNodes root, int x, int y) {
+
+        if (root == null) {
+            return false;
+        }
+        List<List<Integer>> res = new ArrayList<>();
+
+        res = levelTree(root, 0, res);
+        for (List<Integer> re : res) {
+
+            if (re.contains(x) && re.contains(y)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public List<List<Integer>> levelTree(TreeNodes root, int k, List<List<Integer>> res) {
+
+        if (root == null) {
+            return res;
+        }
+        if (k == res.size()) {
+
+            res.add(new ArrayList<>());
+        }
+        res.get(k).add(root.val);
+
+        levelTree(root.left, k + 1, res);
+        levelTree(root.right, k + 1, res);
+
+        return res;
+
+    }
+
+
 }
