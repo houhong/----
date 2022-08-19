@@ -2,7 +2,10 @@ package com.houhong.algorithm.tree;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Queue;
 import java.util.Stack;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.LinkedBlockingDeque;
 
 /**
  * @program: algorithm-work
@@ -219,22 +222,22 @@ public class TreeOper {
 
     public static void main(String[] args) {
 
-        TreeOper oper = new TreeOper();
+        TreeNodes test1 = new TreeNodes();
+        TreeNodes test2 = new TreeNodes();
+        TreeNodes test3 = new TreeNodes();
+        test3.left = new TreeNodes();
+        test3.right = new TreeNodes();
 
-        int[] preorder = new int[]{1, 2, 4, 5, 3, 6};
-        int[] inOrder = new int[]{4, 2, 5, 1, 6, 3};
-
-
-        TreeNodes root = oper.buildTreeV2(preorder, inOrder);
-
-        List<Integer> integers = oper.postOrder(root);
-
-        for (Integer integer : integers) {
-
-            System.out.println(integer);
-        }
+        testM(test3, test2);
+        testM(test3, test1);
+        System.out.println(test1 == test2);
 
 
+    }
+
+    public static void testM(TreeNodes ori, TreeNodes tar) {
+
+        tar = ori;
     }
 
 
@@ -343,20 +346,17 @@ public class TreeOper {
 
     public boolean isCousins(TreeNodes root, int x, int y) {
 
-        if (root == null) {
+        TreeNodes lPar = new TreeNodes();
+        TreeNodes rPar = new TreeNodes();
+        int xDepth = dfs(root, x, lPar);
+        int yDepth = dfs(root, y, rPar);
+
+        if (xDepth == yDepth || lPar != rPar) {
             return false;
         }
-        List<List<Integer>> res = new ArrayList<>();
-
-        res = levelTree(root, 0, res);
-        for (List<Integer> re : res) {
-
-            if (re.contains(x) && re.contains(y)) {
-                return true;
-            }
-        }
-        return false;
+        return true;
     }
+
 
     public List<List<Integer>> levelTree(TreeNodes root, int k, List<List<Integer>> res) {
 
@@ -374,6 +374,117 @@ public class TreeOper {
 
         return res;
 
+    }
+
+
+    /**
+     * 使用dfs 求出target的深度
+     */
+    public int dfs(TreeNodes root, int target, TreeNodes fatherNode) {
+
+        if (root == null) {
+            return -1;
+        }
+        if (root.val == target) {
+            return 0;
+        }
+
+        fatherNode = root;
+        //从左孩子去找
+        int level = dfs(root.left, target, fatherNode);
+        if (level != -1) {
+            return level + 1;
+        }
+        //还原
+        fatherNode = root;
+        //从右孩子去找
+        level = dfs(root.right, target, fatherNode);
+        if (level != -1) {
+            return level + 1;
+        }
+        return -1;
+
+    }
+
+
+    List<TreeNodes> father = new ArrayList<>();
+
+    public boolean isCousins2(TreeNodes root, int x, int y) {
+        int xDepth = depth(root, x);
+        int yDepth = depth(root, y);
+
+        if (xDepth != yDepth || father.get(0) == father.get(1)) return false;
+        return true;
+
+    }
+
+    public int depth(TreeNodes root, int x) {
+        if (root == null) {
+            return -1;
+        }
+
+        if (root.val == x) {
+            return 1;
+        }
+
+        int left = depth(root.left, x);
+        int right = depth(root.right, x);
+
+        int depth = Math.max(left, right);
+        if (depth == 1) {
+            father.add(root);
+        }
+        return depth == -1 ? -1 : depth + 1;
+    }
+
+
+    private class Data {
+
+        TreeNodes node;
+        TreeNodes parent;
+        int depth;
+
+        public Data(TreeNodes node, TreeNodes parent, int depth) {
+            this.node = node;
+            this.parent = parent;
+            this.depth = depth;
+        }
+    }
+
+    //广度遍历： 设计状态：
+    public boolean isCounsins(TreeNodes root, int x, int y) {
+
+        int depthX = 0;
+        int dapthY = 0;
+
+        TreeNodes xPar = new TreeNodes();
+        TreeNodes yPar = new TreeNodes();
+
+        Queue<TreeOper.Data> queue = new LinkedBlockingDeque<>();
+
+        queue.add(new Data(root, null, 0));
+        while (!queue.isEmpty()) {
+
+            Data cur = queue.peek();
+
+            if (cur.node.val == x) {
+                depthX = cur.depth;
+                xPar = cur.parent;
+            }
+
+            if (cur.node.val == y) {
+                dapthY = cur.depth;
+                yPar = cur.parent;
+            }
+            if(cur.node.left != null){
+                queue.add(new Data(cur.node.left,cur.node,cur.depth+1));
+            }
+            if(cur.node.right != null){
+                queue.add(new Data(cur.node.right,cur.node,cur.depth+1));
+            }
+            queue.remove();
+        }
+        return false;
     }
 
 
