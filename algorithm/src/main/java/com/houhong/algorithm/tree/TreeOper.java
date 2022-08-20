@@ -476,15 +476,67 @@ public class TreeOper {
                 dapthY = cur.depth;
                 yPar = cur.parent;
             }
-            if(cur.node.left != null){
-                queue.add(new Data(cur.node.left,cur.node,cur.depth+1));
+            if (cur.node.left != null) {
+                queue.add(new Data(cur.node.left, cur.node, cur.depth + 1));
             }
-            if(cur.node.right != null){
-                queue.add(new Data(cur.node.right,cur.node,cur.depth+1));
+            if (cur.node.right != null) {
+                queue.add(new Data(cur.node.right, cur.node, cur.depth + 1));
             }
             queue.remove();
         }
-        return false;
+        return depthX == dapthY && xPar != yPar;
+    }
+
+    /**
+     * 到达最近0的距离
+     */
+
+    private class ZeroData {
+        int x;
+        int y;
+        int val;
+        int legnth;
+
+        public ZeroData(int x, int y, int val, int legnth) {
+            this.x = x;
+            this.y = y;
+            this.val = val;
+            this.legnth = legnth;
+        }
+    }
+
+    public int[][] updateMatrix(int[][] mat) {
+
+        int[][] res = new int[mat.length][mat[0].length];
+
+        Queue<ZeroData> queue = new LinkedBlockingDeque<>();
+
+        //从0,0 开始
+        ZeroData zeroData = new ZeroData(0, 0, mat[0][0], 0);
+        //设计状态
+        queue.add(zeroData);
+        //进行广搜
+        while (!queue.isEmpty()) {
+
+            ZeroData curNode = queue.peek();
+            //当前值 == 0
+            if (curNode.val == 0) {
+                res[curNode.x][curNode.y] = curNode.legnth;
+            }else {
+                // 节点++
+            }
+            //向下走 -- 越界判断
+            if (curNode.x + 1 < mat.length) {
+                queue.add(new ZeroData(curNode.x + 1, curNode.y, mat[curNode.x + 1][curNode.y], 0));
+            }
+            //向右走 -- 越界判断
+            if (curNode.y + 1 < mat[0].length) {
+                queue.add(new ZeroData(curNode.x, curNode.y + 1, mat[curNode.x][curNode.y + 1], 0));
+            }
+            queue.remove(zeroData);
+        }
+
+        return res;
     }
 
 
