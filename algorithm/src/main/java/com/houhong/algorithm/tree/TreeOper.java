@@ -522,7 +522,7 @@ public class TreeOper {
             //当前值 == 0
             if (curNode.val == 0) {
                 res[curNode.x][curNode.y] = curNode.legnth;
-            }else {
+            } else {
                 // 节点++
             }
             //向下走 -- 越界判断
@@ -540,4 +540,77 @@ public class TreeOper {
     }
 
 
+    private class Truedata {
+
+        int xPos;
+        int yPos;
+        int length;
+
+        public Truedata(int xPos, int yPos, int length) {
+            this.xPos = xPos;
+            this.yPos = yPos;
+            this.length = length;
+        }
+
+    }
+
+    public int[][] updateMatrixV2(int[][] mat) {
+
+        int m = mat.length;
+        int n = mat[0].length;
+        //定义一个方向数组  [(0,-1),()]
+        int[][] dir = new int[][]{
+                {0, 1}, {1, 0}, {0, -1}, {-1, 0}
+        };
+
+        Queue<Truedata> queue = new LinkedBlockingDeque<>();
+        int[][] vis = new int[m][n];
+        //初始化广搜队列 ---> 将所有的0号节点添加到广搜队列
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                vis[i][j] = -1;
+            }
+        }
+        //遍历
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                //不为0 跳过
+                if (mat[i][j] != 0) {
+                    continue;
+                }
+                //访问过
+                vis[i][j] = 0;
+                //添加进入队列
+                queue.add(new Truedata(i, j, 0));
+            }
+        }
+
+        //遍历队列
+        while (!queue.isEmpty()) {
+
+            Truedata cur = queue.peek();
+
+            //状态扩展
+            for (int k = 0; k < 4; k++) {
+                int x = cur.xPos + dir[k][0];
+                int y = cur.yPos +dir[k][1];
+
+                // 越界处理
+                if (x < 0 || y >=n) continue;;
+                if (y<0 || x >= m) continue;
+                //是否访问过
+                if (vis[x][y] != -1) continue;
+                vis[x][y] = cur.length+1;
+
+                //将第二次层放入
+                queue.add(new Truedata(x,y,cur.length+1));
+             }
+            queue.remove(cur);
+
+
+        }
+
+
+        return vis;
+    }
 }
