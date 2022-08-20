@@ -220,21 +220,6 @@ public class TreeOper {
     }
 
 
-    public static void main(String[] args) {
-
-        TreeNodes test1 = new TreeNodes();
-        TreeNodes test2 = new TreeNodes();
-        TreeNodes test3 = new TreeNodes();
-        test3.left = new TreeNodes();
-        test3.right = new TreeNodes();
-
-        testM(test3, test2);
-        testM(test3, test1);
-        System.out.println(test1 == test2);
-
-
-    }
-
     public static void testM(TreeNodes ori, TreeNodes tar) {
 
         tar = ori;
@@ -593,24 +578,111 @@ public class TreeOper {
             //状态扩展
             for (int k = 0; k < 4; k++) {
                 int x = cur.xPos + dir[k][0];
-                int y = cur.yPos +dir[k][1];
+                int y = cur.yPos + dir[k][1];
 
                 // 越界处理
-                if (x < 0 || y >=n) continue;;
-                if (y<0 || x >= m) continue;
+                if (x < 0 || y >= n) continue;
+                if (y < 0 || x >= m) continue;
                 //是否访问过
                 if (vis[x][y] != -1) continue;
-                vis[x][y] = cur.length+1;
+                vis[x][y] = cur.length + 1;
 
                 //将第二次层放入
-                queue.add(new Truedata(x,y,cur.length+1));
-             }
+                queue.add(new Truedata(x, y, cur.length + 1));
+            }
             queue.remove(cur);
 
 
         }
 
-
         return vis;
     }
+
+
+    private class MinLengthData {
+
+
+        private int x;
+        private int y;
+        private int length;
+
+        public MinLengthData(int x, int y, int length) {
+            this.x = x;
+            this.y = y;
+            this.length = length;
+        }
+    }
+
+
+    public int shortestPathBinaryMatrix(int[][] grid) {
+
+        int goalX = grid.length - 1;
+        int goalY = grid[0].length - 1;
+
+        Queue<MinLengthData> queue = new LinkedBlockingDeque<>();
+
+
+        int[][] dir = new int[][]{
+                {0, -1}, {1, -1}, {1, 0}, {1, 1}, {0, 1}, {-1, 1}, {-1, 0}, {-1, -1}
+        };
+
+        if (grid[0][0] != 0 || grid[goalX][goalY] != 0) {
+            return -1;
+        }
+
+        int[][] vis = new int[goalX + 1][goalY + 1];
+        //初始化
+        for (int i = 0; i <= goalX; i++) {
+            for (int j = 0; j <= goalY; j++) {
+                vis[i][j] = -1;
+            }
+        }
+
+
+        queue.add(new MinLengthData(0, 0, 1));
+        while (!queue.isEmpty()) {
+
+            MinLengthData curNode = queue.peek();
+
+
+            for (int i = 0; i < 8; i++) {
+
+                int tempX = curNode.x + dir[i][0];
+                int tempY = curNode.y + dir[i][1];
+
+                //越界判断
+                if (tempX < 0 || tempX > goalX) continue;
+                if (tempY < 0 || tempY > goalY) continue;
+                if (grid[tempX][tempY] == 1) continue;
+                //是否访问过
+                if (vis[tempX][tempY] != -1) continue;
+
+                //状态扩展  1: 扩展的节点刚好是目标节点。结束 还要记录是否走过原来的节点
+                vis[tempX][tempY] = 0;
+
+                if (tempX == goalX && tempY == goalY) {
+                    return curNode.length + 1;
+                }
+                //还没到目标点，扩展状态
+                queue.add(new MinLengthData(tempX, tempY, curNode.length + 1));
+            }
+
+            queue.remove(curNode);
+        }
+
+
+        return -1;
+    }
+
+
+    public static void main(String[] args) {
+
+        int[][] test = new int[][]{
+                {0, 1}, {1, 0}
+        };
+        System.out.println(new TreeOper().shortestPathBinaryMatrix(test));
+
+    }
+
+
 }
