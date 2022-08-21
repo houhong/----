@@ -653,6 +653,7 @@ public class TreeOper {
                 //越界判断
                 if (tempX < 0 || tempX > goalX) continue;
                 if (tempY < 0 || tempY > goalY) continue;
+
                 if (grid[tempX][tempY] == 1) continue;
                 //是否访问过
                 if (vis[tempX][tempY] != -1) continue;
@@ -682,6 +683,49 @@ public class TreeOper {
         };
         System.out.println(new TreeOper().shortestPathBinaryMatrix(test));
 
+    }
+
+
+    /**
+     *
+     **/
+    public class LockData {
+
+        int x, y, z, t, length;
+
+        public LockData(int x, int y, int z, int t, int length) {
+            this.x = x;
+            this.y = y;
+            this.z = z;
+            this.t = t;
+            this.length = length;
+        }
+    }
+
+
+    public int openLock(String[] deadends, String target) {
+
+        if (target == null || target.length() == 0) {
+            return -1;
+        }
+        char[] targetArr = target.toCharArray();
+        Queue<LockData> queue = new LinkedBlockingDeque<>();
+        for (char curChar : targetArr) {
+
+            int curInt = Integer.parseInt(curChar + "");
+
+            //初始化
+            queue.add(new LockData(curInt, 0, 0, 0, 0));
+
+            while(!queue.isEmpty()){
+
+            }
+
+
+        }
+
+
+        return -1;
     }
 
 
