@@ -1,9 +1,9 @@
 package com.houhong.algorithm.tree;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Queue;
-import java.util.Stack;
+import org.apache.commons.lang3.StringUtils;
+
+import javax.swing.plaf.nimbus.State;
+import java.util.*;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.LinkedBlockingDeque;
 
@@ -676,28 +676,16 @@ public class TreeOper {
     }
 
 
-    public static void main(String[] args) {
-
-        int[][] test = new int[][]{
-                {0, 1}, {1, 0}
-        };
-        System.out.println(new TreeOper().shortestPathBinaryMatrix(test));
-
-    }
-
-
     /**
      *
      **/
     public class LockData {
 
-        int x, y, z, t, length;
+        String curState;
+        int length;
 
-        public LockData(int x, int y, int z, int t, int length) {
-            this.x = x;
-            this.y = y;
-            this.z = z;
-            this.t = t;
+        public LockData(String curState, int length) {
+            this.curState = curState;
             this.length = length;
         }
     }
@@ -708,24 +696,88 @@ public class TreeOper {
         if (target == null || target.length() == 0) {
             return -1;
         }
-        char[] targetArr = target.toCharArray();
+
+
+        Set<String> exitStateSet = new HashSet<>();
+        for (int i = 0; i < deadends.length; i++) {
+            exitStateSet.add(deadends[i]);
+        }
+        //表示如果在deadends 里面有 0000 是无论如和也扩展不了的
+        if (exitStateSet.contains("0000")) {
+            return -1;
+        }
         Queue<LockData> queue = new LinkedBlockingDeque<>();
-        for (char curChar : targetArr) {
+        queue.add(new LockData("0000", 0));
+        //初始化
+        while (!queue.isEmpty()) {
 
-            int curInt = Integer.parseInt(curChar + "");
+            LockData curStateNode = queue.peek();
 
-            //初始化
-            queue.add(new LockData(curInt, 0, 0, 0, 0));
-
-            while(!queue.isEmpty()){
-
+            //判断是否成功
+            if (target.equals(curStateNode.curState)) {
+                return curStateNode.length;
             }
-
+            //状态扩展 这是比较重要的
+            for (int x = 0; x < 4; x++) {
+                for (int y = 0; y < 2; y++) {
+                    String newStateStr = genNewState(curStateNode.curState, x, y);
+                    if (!exitStateSet.contains(newStateStr)) {
+                        exitStateSet.add(newStateStr);
+                        queue.add(new LockData(newStateStr, curStateNode.length + 1));
+                    }
+                }
+            }
+            queue.remove();
 
         }
 
 
         return -1;
+    }
+
+    public String genNewState(String curState, int x, int y) {
+
+
+        String curIndex = curState.charAt(x) + "";
+        int curInt = Integer.parseInt(curIndex);
+
+        switch (y) {
+            case 0:
+                curInt++;
+                break;
+            case 1:
+                curInt--;
+                break;
+            default:
+                break;
+        }
+        if (curInt > 9) {
+            curInt = 0;
+        }
+        if (curInt < 0) {
+            curInt = 9;
+        }
+
+        StringBuilder sb = new StringBuilder();
+        sb.append(curState);
+        sb.replace(x, x+1, curInt + "");
+        return sb.toString();
+    }
+
+    public static void main(String[] args) {
+
+        String[] deadEnds = new String[]{
+                "0201", "0101", "0102", "1212", "2002"
+        };
+        TreeOper treeOper = new TreeOper();
+
+        //treeOper.openLock(deadEnds,"0202");
+        String str = "5";
+        if(StringUtils.isNotBlank(str)){
+            StringBuilder sb = new StringBuilder("1234");
+            sb.replace(3, 4, str);
+            System.err.println(sb.toString());
+        }
     }
 
 
