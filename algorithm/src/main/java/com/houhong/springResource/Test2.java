@@ -15,7 +15,8 @@ public class Test2 {
     public static void main(String[] args) {
 
 
-        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(ScanClass1.class);
+        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(MouduleConfig2.class);
+
 
         String[] definitionNames = context.getBeanDefinitionNames();
 

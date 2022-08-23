@@ -11,11 +11,12 @@ import org.springframework.context.annotation.FilterType;
  * @author: houhong
  * @create: 2022-08-22 00:14
  **/
-/*@ComponentScan(basePackageClasses = {
-        Config.class
-},includeFilters ={
-        @ComponentScan.Filter(type = FilterType.ANNOTATION,classes = MyBean.class)
-},useDefaultFilters = false)*/
+@ComponentScan(basePackageClasses = ScanClass1.class,
+        useDefaultFilters = false,
+        excludeFilters = {
+                @ComponentScan.Filter(type = FilterType.CUSTOM,
+                        classes = CustomFilter.class)
+        })
 @Configuration
 public class Config {
 

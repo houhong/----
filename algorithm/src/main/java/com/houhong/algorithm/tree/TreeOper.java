@@ -697,7 +697,7 @@ public class TreeOper {
             return -1;
         }
 
-
+        //边界条件的处理
         Set<String> exitStateSet = new HashSet<>();
         for (int i = 0; i < deadends.length; i++) {
             exitStateSet.add(deadends[i]);
@@ -717,7 +717,7 @@ public class TreeOper {
             if (target.equals(curStateNode.curState)) {
                 return curStateNode.length;
             }
-            //状态扩展 这是比较重要的
+            //状态扩展 这是比较重要的 -- 这里才是自己发挥的地方。
             for (int x = 0; x < 4; x++) {
                 for (int y = 0; y < 2; y++) {
                     String newStateStr = genNewState(curStateNode.curState, x, y);
@@ -760,25 +760,114 @@ public class TreeOper {
 
         StringBuilder sb = new StringBuilder();
         sb.append(curState);
-        sb.replace(x, x+1, curInt + "");
+        sb.replace(x, x + 1, curInt + "");
         return sb.toString();
     }
 
     public static void main(String[] args) {
 
-        String[] deadEnds = new String[]{
-                "0201", "0101", "0102", "1212", "2002"
-        };
-        TreeOper treeOper = new TreeOper();
+        int[][] testcor = new int[3][2];
 
-        //treeOper.openLock(deadEnds,"0202");
-        String str = "5";
-        if(StringUtils.isNotBlank(str)){
-            StringBuilder sb = new StringBuilder("1234");
-            sb.replace(3, 4, str);
-            System.err.println(sb.toString());
+        for (int i = 0; i < testcor.length; i++) {
+            for (int j = 0; j < testcor[0].length; j++) {
+                testcor[i][j] = 0;
+            }
+        }
+        TreeOper treeOper = new TreeOper();
+        System.out.println(treeOper.movingCount(3, 2, 17));
+    }
+
+    public class RobotData {
+        int x;
+        int y;
+        int steps;
+
+        public RobotData(int x, int y, int steps) {
+            this.x = x;
+            this.y = y;
+            this.steps = steps;
+        }
+
+        @Override
+        public int hashCode() {
+            int hashcode = 29 + x + y;
+            return hashcode;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+
+            if (!(obj instanceof RobotData)) {
+                return false;
+            }
+
+            RobotData objData = (RobotData) obj;
+
+            return this.x == objData.x && this.y == objData.y;
+
         }
     }
 
+
+    public int movingCount(int m, int n, int k) {
+
+        int steps = 0;
+
+        int[][] hasVis = new int[m][n];
+
+
+
+        for (int i = 0; i < hasVis.length; i++) {
+            for (int j = 0; j < hasVis[0].length; j++) {
+                hasVis[i][j] = -1;
+            }
+        }
+
+        int[][] dir = new int[][]{
+                {0, 1}, {1, 0}
+        };
+        Queue<RobotData> queue = new LinkedBlockingDeque<>();
+        queue.add(new RobotData(0, 0, 1));
+
+
+        if(m ==1 && n == 1){
+            return  1;
+        }
+        while (!queue.isEmpty()) {
+
+            RobotData curNode = queue.peek();
+
+
+
+            for (int i = 0; i < dir.length; i++) {
+
+                int tempX = curNode.x + dir[i][0];
+                int tempY = curNode.y + dir[i][1];
+
+                //边界判断
+                if (tempX < 0 || tempX >= m) continue;
+                if (tempY < 0 || tempY >= n) continue;
+                //判断是否访问过
+                if (hasVis[tempX][tempY] != -1) continue;
+
+                //当前节点访问过
+                hasVis[curNode.x][curNode.y] = 0;
+
+                RobotData newData = null;
+                //做业务操作
+                newData = new RobotData(tempX,tempY,curNode.steps+1);
+                //状态扩展
+                queue.add(newData);
+            }
+            if(curNode.x + curNode.y <= k ) steps ++;
+            //返回条件
+            if (curNode.x == (m -1) && curNode.y == (n-1)) return  steps+1;
+            queue.remove(curNode);
+        }
+
+
+        return steps;
+
+    }
 
 }
