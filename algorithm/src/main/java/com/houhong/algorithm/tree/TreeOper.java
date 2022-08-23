@@ -870,4 +870,71 @@ public class TreeOper {
 
     }
 
+    public class RobotDataV2 {
+        int x;
+        int y;
+
+        public RobotDataV2(int x, int y) {
+            this.x = x;
+            this.y = y;
+        }
+
+    }
+
+
+    public int movingCountV2(int m, int n, int k) {
+
+        int steps = 0;
+
+
+        int[][] dir = new int[][]{
+                {0, 1}, {1, 0}
+        };
+        Queue<RobotDataV2> queue = new LinkedBlockingDeque<>();
+        queue.add(new RobotDataV2(0, 0));
+
+
+        //设置遍历节点 计算规则： m,n = m * i + j  比如：3，2的矩阵。坐标是 1,2 在一纬数组中的值是  1 * 2 +2 = 4
+        Set<Integer> hasVis = new HashSet<>();
+
+        //初始化一个数组 用来计算两位数的 只和
+        int[] temps = new int[100];
+        for (int i = 0; i < 10; i++) {
+            for (int j = 0;j < 10; j++) {
+                temps[i* 10 + j] = i+j;
+            }
+        }
+
+        while (!queue.isEmpty()) {
+
+            RobotDataV2 curNode = queue.peek();
+            steps++;
+            //返回条件
+            if (curNode.x == (m -1) && curNode.y == (n-1)) return  steps;
+
+            for (int i = 0; i < dir.length; i++) {
+
+                int tempX = curNode.x + dir[i][0];
+                int tempY = curNode.y + dir[i][1];
+
+                //边界判断
+                if (tempX < 0 || tempX >= m) continue;
+                if (tempY < 0 || tempY >= n) continue;
+                if (hasVis.contains( tempX * n + tempY)) continue;
+                //业务
+                if (temps[tempX] + temps[tempY] > k) continue;
+                RobotDataV2 newData = null;
+                //做业务操作
+                newData = new RobotDataV2(tempX,tempY);
+                //状态扩展
+                queue.add(newData);
+            }
+            queue.remove(curNode);
+        }
+
+
+        return steps;
+
+    }
+
 }
